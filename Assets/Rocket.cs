@@ -5,6 +5,8 @@ using UnityEngine;
 public class Rocket : MonoBehaviour
 {
     //Game Inits
+    [SerializeField] float rcsThrust = 100f;
+    [SerializeField] float boostThrust = 100f;
     Rigidbody rigidBody;
     AudioSource rocketThrust;
 
@@ -18,13 +20,15 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ProcessInput();
+        Thrust();
+        Rotate();
     }
 
+    private void Thrust() {
+        float boostTimeFrame = boostThrust*Time.deltaTime;
 
-    private void ProcessInput() {
         if(Input.GetKey(KeyCode.Space)) {
-            rigidBody.AddRelativeForce(Vector3.up);
+            rigidBody.AddRelativeForce(Vector3.up*boostTimeFrame);
             if(!rocketThrust.isPlaying) {
                 rocketThrust.Play(); //so it dosen't layer
             }
@@ -32,14 +36,22 @@ public class Rocket : MonoBehaviour
         else {
             rocketThrust.Stop();
         }
+    }
 
+    private void Rotate() {
+
+        rigidBody.freezeRotation = true; //take manual control of rotation
+
+        float rotationFrameSpeed = rcsThrust*Time.deltaTime;
         if(Input.GetKey(KeyCode.A)) {
             //rigidBody.AddRelativeForce(Vector3.left);
-            transform.Rotate(Vector3.forward);
+            transform.Rotate(Vector3.forward*rotationFrameSpeed);
         }
         else if(Input.GetKey(KeyCode.D)) {
             //rigidBody.AddRelativeForce(Vector3.right);
-            transform.Rotate(-Vector3.forward);
+            transform.Rotate(-Vector3.forward*rotationFrameSpeed);
         }
+
+        rigidBody.freezeRotation = false; //resume physics based rotation
     }
 }
