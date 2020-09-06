@@ -6,11 +6,13 @@ public class Rocket : MonoBehaviour
 {
     //Game Inits
     Rigidbody rigidBody;
+    AudioSource rocketThrust;
 
     // Start is called before the first frame update
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>(); //Generics
+        rocketThrust = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -23,6 +25,12 @@ public class Rocket : MonoBehaviour
     private void ProcessInput() {
         if(Input.GetKey(KeyCode.Space)) {
             rigidBody.AddRelativeForce(Vector3.up);
+            if(!rocketThrust.isPlaying) {
+                rocketThrust.Play(); //so it dosen't layer
+            }
+        }
+        else {
+            rocketThrust.Stop();
         }
 
         if(Input.GetKey(KeyCode.A)) {
