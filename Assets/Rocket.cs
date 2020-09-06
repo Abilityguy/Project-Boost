@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
+    //Game Inits
+    Rigidbody rigidBody;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        rigidBody = GetComponent<Rigidbody>(); //Generics
     }
 
     // Update is called once per frame
@@ -19,14 +22,16 @@ public class Rocket : MonoBehaviour
 
     private void ProcessInput() {
         if(Input.GetKey(KeyCode.Space)) {
-            
+            rigidBody.AddRelativeForce(Vector3.up);
         }
 
         if(Input.GetKey(KeyCode.A)) {
-
+            //rigidBody.AddRelativeForce(Vector3.left);
+            transform.Rotate(Vector3.forward);
         }
         else if(Input.GetKey(KeyCode.D)) {
-            
+            //rigidBody.AddRelativeForce(Vector3.right);
+            transform.Rotate(-Vector3.forward);
         }
     }
 }
