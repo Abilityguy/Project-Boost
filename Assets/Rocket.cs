@@ -9,6 +9,7 @@ public class Rocket : MonoBehaviour
     [SerializeField] float rcsThrust = 100f;
     [SerializeField] float boostThrust = 100f;
     [SerializeField] float levelLoadDelay = 2f;
+    bool collisionEnabled = true;
     
     
     [SerializeField] AudioClip mainEngine;
@@ -39,10 +40,22 @@ public class Rocket : MonoBehaviour
             Thrust();
             Rotate();
         }
+        if(Debug.isDebugBuild) {
+            DebugKeys();
+        }
+    }
+
+    private void DebugKeys() {  
+        if( Input.GetKeyDown(KeyCode.L)) {
+            LoadNextScene();
+        }
+        else if(Input.GetKeyDown(KeyCode.C)) {
+            collisionEnabled = !collisionEnabled;
+        }
     }
 
     void OnCollisionEnter(Collision collision) {
-        if( state != State.Alive) { return; }
+        if( state != State.Alive || !collisionEnabled) { return; }
 
         switch (collision.gameObject.tag) {
             case "Friendly":
@@ -80,7 +93,10 @@ public class Rocket : MonoBehaviour
     }
 
     private void LoadNextScene() {
-        SceneManager.LoadScene(1);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int totalScenes = SceneManager.sceneCountInBuildSettings;
+        int nextSceneIndex = (currentSceneIndex + 1)%totalScenes;
+        SceneManager.LoadScene(nextSceneIndex);
     }
 
     private void Thrust() {
